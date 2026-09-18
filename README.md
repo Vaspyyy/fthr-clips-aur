@@ -10,7 +10,8 @@ paru -S fthr-clips-bin
 
 **Linux alpha:** upstream qualifies Hyprland/AMD. KDE Wayland currently cannot
 record: its compositor exposes neither of the two capture protocols implemented
-by FTHR, and FTHR has no ScreenCast portal backend. NVIDIA NVENC exists in the
+by FTHR, and FTHR has no ScreenCast portal backend. Screenshots also fail (the Qt fallback
+produces black output on the tested desktop). NVIDIA NVENC exists in the
 engine but is not upstream-qualified; a compositor failure happens before encoder
 selection. Installing this package does not remove those limitations.
 

@@ -7,6 +7,14 @@ if [[ "${GITHUB_ACTIONS:-}" == true && "${GITHUB_REF:-}" != refs/heads/main ]]; 
   echo 'AUR publication is restricted to trusted main.' >&2
   exit 1
 fi
+# Do not let an older queued run overwrite a newer reviewed main revision.
+if [[ "${GITHUB_ACTIONS:-}" == true ]]; then
+  current_main=$(git ls-remote origin refs/heads/main | cut -f1)
+  [[ $(git rev-parse HEAD) == "$current_main" ]] || {
+    echo 'Main advanced while this run was queued; publish the latest revision instead.' >&2
+    exit 1
+  }
+fi
 workspace=$PWD
 temporary=$(mktemp -d)
 trap 'rm -rf "$temporary"' EXIT

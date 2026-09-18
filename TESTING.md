@@ -49,3 +49,27 @@ These findings remain advisory rather than being hidden by a fake dependency
 list. The independent ELF dependency, artifact-layout, and desktop checks are
 mandatory CI gates. Static basename closure cannot prove every dynamic lookup;
 real desktop testing remains required for release PRs. CI never runs the app.
+
+## Completed publication and lifecycle checks
+
+- A fresh GitHub checkout and a fresh public AUR clone both build; all source
+  checks pass and AUR `PKGBUILD`/`.SRCINFO` match GitHub byte for byte.
+- The user ran the supplied sudo lifecycle test and reported PASS. It installs,
+  removes, verifies existing settings/clips by SHA-256, and reinstalls. Final
+  `pacman -Qkk` reports zero altered files.
+- Plain terminal launch and KDE's `kioclient exec` desktop-entry launch start the
+  final installed program with its bundled engine. Application inventory confirms
+  a visible FTHR Clips window. The icon file matches upstream exactly.
+- Screenshot hotkey IPC reaches the app. `grim` fails because KWin lacks its
+  capture protocol, then Qt's XWayland fallback writes an entirely black PNG.
+  Screenshots are therefore **not functional** on this tested desktop.
+- Remote package CI, upstream-monitor workflow dispatch, and authenticated AUR
+  deployment have all completed successfully. The deploy job verified AUR
+  already matches the reviewed package, exercising the configured secret/key.
+- A new-release PR cannot be observed until a newer release exists; release
+  selection, checksum rejection and transactional update paths are unit tested.
+- Native desktop screenshot automation was unavailable (portal denied), so no
+  visual screenshot assertion for the Plasma taskbar/menu icon is claimed.
+
+Upstream follow-up: [desktop identity PR #19](https://github.com/FTHR-Community/FTHR-Clips/pull/19),
+[capture limitation issue #20](https://github.com/FTHR-Community/FTHR-Clips/issues/20).
