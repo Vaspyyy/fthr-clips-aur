@@ -1,0 +1,9 @@
+/src/
+/pkg/
+*.AppImage
+*.AppImage.sha256
+*.pkg.tar.*
+*.src.tar.*
+__pycache__/
+*.pyc
+*.log

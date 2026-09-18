@@ -1,0 +1,39 @@
+name: Publish reviewed package to AUR
+on:
+  push:
+    branches: [main]
+    paths: [PKGBUILD, .SRCINFO, LICENSE]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: publish-aur
+  cancel-in-progress: false
+jobs:
+  validate:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    steps:
+      - name: Install Arch tools
+        run: pacman -Syu --noconfirm --needed git python squashfs-tools namcap desktop-file-utils glibc zlib libglvnd libdrm libxcb wayland
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Validate trusted main without AUR credentials
+        run: |
+          useradd --create-home builder
+          chown -R builder:builder "$GITHUB_WORKSPACE"
+          runuser -u builder -- bash maintenance/validate.sh
+  publish:
+    needs: validate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Publish source recipe using dedicated AUR identity
+        env:
+          AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+        run: bash maintenance/publish-aur.sh

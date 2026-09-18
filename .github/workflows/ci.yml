@@ -1,0 +1,24 @@
+name: Package checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    steps:
+      - name: Install Arch tools
+        run: pacman -Syu --noconfirm --needed git python squashfs-tools namcap desktop-file-utils glibc zlib libglvnd libdrm libxcb wayland
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Build as unprivileged user
+        shell: bash
+        run: |
+          useradd --create-home builder
+          chown -R builder:builder "$GITHUB_WORKSPACE"
+          runuser -u builder -- bash maintenance/validate.sh
