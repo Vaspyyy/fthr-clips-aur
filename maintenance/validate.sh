@@ -14,7 +14,7 @@ if grep -Eq '^[[:space:]]*sha256sums = SKIP$' .SRCINFO; then
   echo 'Unchecked sources are forbidden.' >&2
   exit 1
 fi
-makepkg --verifysource --noconfirm
+makepkg --verifysource --force --noconfirm
 makepkg --cleanbuild --force --noconfirm
 python maintenance/audit-elf.py pkg/fthr-clips-bin/usr/lib/fthr-clips
 desktop-file-validate pkg/fthr-clips-bin/usr/share/applications/fthr-clips.desktop

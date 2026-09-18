@@ -1,6 +1,6 @@
 # Validation notes
 
-Initial release: upstream `v1.1.0-alpha`, Arch `1.1.0alpha-1`, 2026-09-18.
+Initial release: upstream `v1.1.0-alpha`, Arch `1.1.0alpha-2`, 2026-09-18.
 Official artifact SHA-256:
 `47634819ac68e797ca42e76c9d1fe9f465d817f937a177d75733f4a591086b1a`.
 Matched the adjacent release checksum and GitHub API digest.
@@ -59,7 +59,8 @@ real desktop testing remains required for release PRs. CI never runs the app.
   `pacman -Qkk` reports zero altered files.
 - Plain terminal launch and KDE's `kioclient exec` desktop-entry launch start the
   final installed program with its bundled engine. Application inventory confirms
-  a visible FTHR Clips window. The icon file matches upstream exactly.
+  a visible FTHR Clips window. The icon file matches upstream exactly. Qt resolves it through the active
+  desktop icon theme. The window exports a 48px `_NET_WM_ICON`.
 - Screenshot hotkey IPC reaches the app. `grim` fails because KWin lacks its
   capture protocol, then Qt's XWayland fallback writes an entirely black PNG.
   Screenshots are therefore **not functional** on this tested desktop.
@@ -73,3 +74,10 @@ real desktop testing remains required for release PRs. CI never runs the app.
 
 Upstream follow-up: [desktop identity PR #19](https://github.com/FTHR-Community/FTHR-Clips/pull/19),
 [capture limitation issue #20](https://github.com/FTHR-Community/FTHR-Clips/issues/20).
+
+KDE's actual `KService::serviceByDesktopName("fthr-clips")` resolves the installed
+entry with name `FTHR Clips`, executable `fthr-clips`, menu ID
+`fthr-clips.desktop`, `noDisplay=false`, and an icon resolved by the current
+Win11-black theme via hicolor inheritance. Revision 2 adds the observed
+`StartupWMClass=FTHR Clips` for XWayland grouping; it changes desktop metadata
+only. The direct UI/engine binaries remain byte-identical to revision 1.

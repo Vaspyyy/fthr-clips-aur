@@ -26,7 +26,8 @@ at runtime. The binary itself is unmodified. Licenses/notices go under
 
 The small upstream AppRun is adapted into `/usr/bin/fthr-clips`: a fixed install
 path, caller-respecting Qt backend selection, and Qt's `-desktopfile fthr-clips`
-option. A normal desktop entry and 512px hicolor icon provide desktop integration.
+option. A normal desktop entry, matching X11 `StartupWMClass`, and 512px hicolor icon
+provide desktop integration.
 For this alpha, KDE uses Qt's XWayland UI backend to avoid the invisible native
 Wayland window tracked by [upstream PR #10](https://github.com/FTHR-Community/FTHR-Clips/pull/10).
 This only changes the UI; Wayland capture remains subject to the limitation above.

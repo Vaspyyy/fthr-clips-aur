@@ -7,13 +7,16 @@ if [[ "${GITHUB_ACTIONS:-}" == true && "${GITHUB_REF:-}" != refs/heads/main ]]; 
   echo 'AUR publication is restricted to trusted main.' >&2
   exit 1
 fi
-# Do not let an older queued run overwrite a newer reviewed main revision.
+# A docs-only main commit must not suppress a validated package publication.
+# Fetch without changing the reviewed checkout, then compare every published blob.
 if [[ "${GITHUB_ACTIONS:-}" == true ]]; then
-  current_main=$(git ls-remote origin refs/heads/main | cut -f1)
-  [[ $(git rev-parse HEAD) == "$current_main" ]] || {
-    echo 'Main advanced while this run was queued; publish the latest revision instead.' >&2
-    exit 1
-  }
+  git fetch --no-tags origin refs/heads/main
+  for package_file in PKGBUILD .SRCINFO LICENSE; do
+    if [[ $(git rev-parse "HEAD:$package_file") != $(git rev-parse "FETCH_HEAD:$package_file") ]]; then
+      echo 'Package metadata advanced during this run; the newer package workflow must publish it.' >&2
+      exit 1
+    fi
+  done
 fi
 workspace=$PWD
 temporary=$(mktemp -d)
