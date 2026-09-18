@@ -1,6 +1,6 @@
 # Validation notes
 
-Initial release: upstream `v1.1.0-alpha`, Arch `1.1.0alpha-2`, 2026-09-18.
+Validated release: upstream `v1.1.0-alpha`, Arch `1.1.0alpha-2`, 2026-09-18.
 Official artifact SHA-256:
 `47634819ac68e797ca42e76c9d1fe9f465d817f937a177d75733f4a591086b1a`.
 Matched the adjacent release checksum and GitHub API digest.
@@ -54,7 +54,7 @@ real desktop testing remains required for release PRs. CI never runs the app.
 
 - A fresh GitHub checkout and a fresh public AUR clone both build; all source
   checks pass and AUR `PKGBUILD`/`.SRCINFO` match GitHub byte for byte.
-- The user ran the supplied sudo lifecycle test and reported PASS. It installs,
+- The user ran the supplied sudo lifecycle test on revision 1 and reported PASS. It installs,
   removes, verifies existing settings/clips by SHA-256, and reinstalls. Final
   `pacman -Qkk` reports zero altered files.
 - Plain terminal launch and KDE's `kioclient exec` desktop-entry launch start the
