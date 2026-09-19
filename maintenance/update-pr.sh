@@ -3,10 +3,10 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 # Token is used for this repository only; never publish to AUR from this job.
 python maintenance/update.py --allow-prerelease
-if git diff --quiet -- PKGBUILD .SRCINFO; then
+if git diff --quiet -- packages/fthr-clips-bin/PKGBUILD packages/fthr-clips-bin/.SRCINFO; then
   exit 0
 fi
-version=$(sed -n 's/^pkgver=//p' PKGBUILD)
+version=$(sed -n 's/^pkgver=//p' packages/fthr-clips-bin/PKGBUILD)
 [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([a-z]+[0-9]*)?$ ]]
 branch="automation/upstream-$version"
 # Resume interrupted proposals without overwriting an existing automation branch.
@@ -16,7 +16,7 @@ else
   git switch -c "$branch"
   git config user.name 'github-actions[bot]'
   git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-  git add PKGBUILD .SRCINFO
+  git add packages/fthr-clips-bin/PKGBUILD packages/fthr-clips-bin/.SRCINFO
   git commit -m "Update fthr-clips-bin to $version"
   gh auth setup-git
   git push origin "HEAD:refs/heads/$branch"

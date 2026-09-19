@@ -13,6 +13,7 @@ import urllib.request
 REPO = 'FTHR-Community/FTHR-Clips'
 API = f'https://api.github.com/repos/{REPO}/releases'
 ROOT = Path(__file__).resolve().parents[1]
+PACKAGE = ROOT / 'packages' / 'fthr-clips-bin'
 VERSION = re.compile(r'v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-(alpha|beta|rc)(?:\.(0|[1-9][0-9]*))?)?\Z')
 
 
@@ -135,7 +136,7 @@ def main():
     digest_matches(sums[0], hashlib.sha256(sum_data).hexdigest())
     expected = checksum(sum_data.decode('ascii'), artifact['name'])
     digest_matches(artifact, expected)
-    path = ROOT / 'PKGBUILD'
+    path = PACKAGE / 'PKGBUILD'
     original = path.read_text()
     current = re.findall(r'^pkgver=([0-9a-z.]+)$', original, re.M)
     if len(current) != 1:
@@ -152,7 +153,7 @@ def main():
         return
     if os.geteuid() == 0:
         raise ValueError('Run updater as an unprivileged user (makepkg refuses root)')
-    srcinfo = ROOT / '.SRCINFO'
+    srcinfo = PACKAGE / '.SRCINFO'
     old_info = srcinfo.read_bytes() if srcinfo.exists() else None
     with tempfile.TemporaryDirectory(prefix='fthr-update-') as temporary:
         source = Path(temporary) / artifact['name']
@@ -163,10 +164,10 @@ def main():
             changed = replace_field(changed, field, value)
         try:
             path.write_text(changed)
-            info = subprocess.check_output(['makepkg', '--printsrcinfo'], cwd=ROOT)
+            info = subprocess.check_output(['makepkg', '--printsrcinfo'], cwd=PACKAGE)
             srcinfo.write_bytes(info)
             env = dict(os.environ, SRCDEST=temporary)
-            subprocess.run(['bash', 'maintenance/validate.sh'], cwd=ROOT, env=env, check=True)
+            subprocess.run(['bash', 'maintenance/validate.sh', 'fthr-clips-bin'], cwd=ROOT, env=env, check=True)
         except BaseException:
             path.write_text(original)
             if old_info is None:

@@ -1,5 +1,5 @@
-/src/
-/pkg/
+src/
+pkg/
 *.AppImage
 *.AppImage.sha256
 *.pkg.tar.*
@@ -7,3 +7,10 @@
 __pycache__/
 *.pyc
 *.log
+
+# makepkg VCS source cache
+/packages/fthr-clips-git/FTHR-Clips/
+
+# Declared Git-package download artifacts
+/packages/fthr-clips-git/*.whl
+/packages/fthr-clips-git/*.tar.xz

@@ -82,7 +82,7 @@ class UpdaterTests(unittest.TestCase):
             original = "pkgver=1.0.0\npkgrel=2\n_upstream_version=1.0.0\nsha256sums=('old')\n"
             (root / 'PKGBUILD').write_text(original)
             (root / '.SRCINFO').write_bytes(b'original srcinfo')
-            with patch.object(u, 'ROOT', root), patch.object(u, 'fetch', side_effect=fake_fetch), patch.object(u.os, 'geteuid', return_value=1000), patch('sys.argv', ['update.py']), patch.object(u.subprocess, 'check_output', side_effect=['1', b'new srcinfo']), patch.object(u.subprocess, 'run', side_effect=subprocess.CalledProcessError(1, 'validate')):
+            with patch.object(u, 'PACKAGE', root), patch.object(u, 'fetch', side_effect=fake_fetch), patch.object(u.os, 'geteuid', return_value=1000), patch('sys.argv', ['update.py']), patch.object(u.subprocess, 'check_output', side_effect=['1', b'new srcinfo']), patch.object(u.subprocess, 'run', side_effect=subprocess.CalledProcessError(1, 'validate')):
                 with self.assertRaises(subprocess.CalledProcessError):
                     u.main()
             self.assertEqual((root / 'PKGBUILD').read_text(), original)

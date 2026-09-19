@@ -1,5 +1,38 @@
 # Validation notes
 
+## Development package and monorepo (2026-09-19)
+
+Source: upstream `linux` commit `64a7b0b35a22d9153259d3599e47ec0ed50efd8c`;
+package `1.1.0alpha.r3.g64a7b0b-1`. No pending PRs applied.
+
+- All static source checksums pass; only Git uses SKIP.
+- Native Release build: 13 CTest contracts pass, VA-API hardware probe skips.
+  Full headless Python suite: 1,008 passed, 15 skipped. Tested with Python 3.14.7,
+  PySide6 6.11.2, NumPy 2.5.3 and OpenCV 5.0.0.
+- Upstream source license gate passes. All seven FFmpeg shared-library hashes
+  match upstream after packaging. Private CLI RPATH is relocated separately.
+- 11 ELF files pass layout/dependency auditing. Engine/mixer `ldd` resolves
+  private FFmpeg correctly; no absolute build-host RPATH, privileged bits or
+  unsafe symlinks. Package files stay under `/usr`.
+- `namcap PKGBUILD` passes. Package advisories cover private Python imports,
+  guarded Windows imports, private FFmpeg, and unstripped binaries. The real
+  insecure CLI RPATH finding was fixed. Desktop validation accepts upstream's
+  multiple-category hint; pending desktop identity changes are not applied.
+- Maintenance tests cover both metadata files, branch/version order, source
+  checksums, updater rollback/paths, independent package deployment, stale/no-op
+  publication, obsolete file removal and isolated VCS version regeneration.
+- The binary recipe and metadata are byte-identical to their pre-migration
+  versions. Its runtime behavior is unchanged.
+
+Pre-install desktop smoke: native Wayland window remains invisible on KWin;
+xcb opens a visible window, so the launcher keeps a KDE-only UI fallback.
+Engine/mixer paths resolve, PortAudio microphone capture starts, and PulseAudio
+captures the default monitor at 48 kHz stereo. Replay still fails at absent KWin
+capture protocols before encoder selection. Screenshot IPC reaches grim and
+the Qt fallback. Installed-package evidence is recorded after lifecycle testing.
+
+## Previously validated binary release
+
 Validated release: upstream `v1.1.0-alpha`, Arch `1.1.0alpha-2`, 2026-09-18.
 Official artifact SHA-256:
 `47634819ac68e797ca42e76c9d1fe9f465d817f937a177d75733f4a591086b1a`.

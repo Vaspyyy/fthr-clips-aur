@@ -1,101 +1,178 @@
-# fthr-clips-bin
+# FTHR Clips for Arch Linux
 
-Arch packaging for the official x86_64 Linux binary of
+Authoritative maintenance repository for two alternative packages of
 [FTHR Clips](https://github.com/FTHR-Community/FTHR-Clips).
-[AUR package](https://aur.archlinux.org/packages/fthr-clips-bin).
+
+| Package | Upstream source | Runtime | Updates |
+| --- | --- | --- | --- |
+| [fthr-clips-bin](https://aur.archlinux.org/packages/fthr-clips-bin) | Official Linux release | Extracted upstream AppImage contents | Automatic release monitoring and reviewed update PRs |
+| [fthr-clips-git](https://aur.archlinux.org/packages/fthr-clips-git) | Current upstream **linux** branch | Source-built engine, system Python/Qt | Paru development checks and local rebuilds |
 
 ```sh
 paru -S fthr-clips-bin
+# Or switch to development:
+paru -S fthr-clips-git
 ```
 
-**Linux alpha:** upstream qualifies Hyprland/AMD. KDE Wayland currently cannot
-record: its compositor exposes neither of the two capture protocols implemented
-by FTHR, and FTHR has no ScreenCast portal backend. Screenshots also fail (the Qt fallback
-produces black output on the tested desktop). NVIDIA NVENC exists in the
-engine but is not upstream-qualified; a compositor failure happens before encoder
-selection. Installing this package does not remove those limitations.
+They both provide/conflict with `fthr-clips`; pacman removes the installed variant
+when you approve the switch. Neither replaces nor obsoletes the other. Packages
+never own or remove `~/.fthr`, `~/FTHR_Clips`, or user-selected clip directories.
 
-## Packaging
+**Linux alpha:** KWin currently exposes neither capture protocol implemented by
+FTHR. There is no ScreenCast portal video backend; replay fails before encoder
+selection. Screenshots also fail on this tested KDE desktop. These limitations
+remain in both variants; see [issue #20](https://github.com/FTHR-Community/FTHR-Clips/issues/20)
+and [TESTING.md](TESTING.md). No downstream KWin backend is added.
 
-The official AppImage is SHA-256 pinned, extracted with `unsquashfs` without
-executing its runtime, and installed under `/usr/lib/fthr-clips`. Its PyInstaller
-`_internal` tree, Qt plugins, engine, bundled libraries, and optional uploader
-remain together. No FUSE, AppImageLauncher, system Python, or system Qt is needed
-at runtime. The binary itself is unmodified. Licenses/notices go under
-`/usr/share/licenses/fthr-clips-bin`.
+## Repository layout
 
-The small upstream AppRun is adapted into `/usr/bin/fthr-clips`: a fixed install
-path, caller-respecting Qt backend selection, and Qt's `-desktopfile fthr-clips`
-option. A normal desktop entry, matching X11 `StartupWMClass`, and 512px hicolor icon
-provide desktop integration.
-For this alpha, KDE uses Qt's XWayland UI backend to avoid the invisible native
-Wayland window tracked by [upstream PR #10](https://github.com/FTHR-Community/FTHR-Clips/pull/10).
-This only changes the UI; Wayland capture remains subject to the limitation above.
-Set `QT_QPA_PLATFORM=wayland` explicitly to test the native UI. Reassess the
-version-specific fallback on every release.
+```text
+packages/
+  fthr-clips-bin/    # standalone AUR recipe and metadata
+  fthr-clips-git/    # standalone AUR recipe, launcher and offline build helpers
+maintenance/        # validation, release updater, per-package AUR publication
+tests/              # maintenance and package contract tests
+.github/workflows/  # validation, monitored releases, independent AUR deployment
+README.md
+TESTING.md
+LICENSE
+```
 
-Runtime dependencies come from an ELF audit: `glibc`, `zlib`, `libglvnd`, `libdrm`,
-`libxcb`, `wayland`. Important optional dependencies: `pipewire-pulse` or
-`pulseaudio` for audio; `grim` for supported Wayland screenshots;
-`openbsd-netcat` for compositor shortcut commands; `ffmpeg` for export/thumbnails;
-`xdg-utils` for opening folders; `xorg-xwayland` for the KDE UI workaround;
-GPU drivers and X11 helpers as described in PKGBUILD. `wayland-protocols` is a
-build dependency upstream, not a runtime dependency here. Neither root nor
-membership of `input` is required. KDE shortcuts are not registered automatically.
+## Binary package
 
-Upstream stores settings/logs in `~/.fthr` and clips in `~/FTHR_Clips` (or the
-user-selected location). The package owns neither directory and has no install,
-removal, or migration scripts touching user data. Uploading stays opt-in; the
-bundled uploader is not activated by this package. No self-updater was found.
+The release recipe is unchanged by the monorepo migration. It verifies the
+published SHA-256, extracts the AppImage without executing it, and preserves its
+private PyInstaller/Qt/engine tree under `/usr/lib/fthr-clips`. It requires neither
+FUSE nor AppImageLauncher. Its desktop identity corrections and KDE UI fallback
+are retained. Runtime dependencies are `glibc`, `zlib`, `libglvnd`, `libdrm`,
+`libxcb`, and `wayland`; system Python/Qt are build-only or unnecessary.
 
-## Build and maintain
+## Development package
+
+The sole application source is
+`git+https://github.com/FTHR-Community/FTHR-Clips.git#branch=linux`.
+No fork, pending PR, or downstream feature patch is included. `pkgver()` uses
+`git describe --tags --long --abbrev=7`, normalizing `v1.1.0-alpha-3-g64a7b0b`
+to `1.1.0alpha.r3.g64a7b0b`. Keeping `alpha` attached makes pacman sort the
+prerelease below beta/rc/stable. Unrecognized tags fail for review; no epoch.
+
+The engine and playback mixer build with CMake in Release mode. System Python,
+PySide6/Qt Multimedia, NumPy, OpenCV and `python-keyboard` run the UI directly.
+The private source-style layout under `/usr/lib/fthr-clips` preserves upstream
+engine, mixer and asset discovery without rewriting application code. Arch's
+OpenCV 5 is newer than upstream's release lock: the complete upstream test suite
+and actual launch are checked, and scheduled builds catch later incompatibility.
+The native layout avoids PyInstaller's wheel-specific Qt plugin assumptions.
+
+Only the optional uploader follows upstream's frozen build, preserving its
+sealed manifest and explicit in-app consent. Three pinned PyInstaller build-tool
+wheels are declared, checksummed sources installed into a temporary tools tree.
+There is no pip download, appimagetool, or network fetch in build/package steps.
+Licenses for the uploader's actual collected runtime are inventoried from Arch
+package ownership and copied alongside upstream notices. New unknown license
+evidence stops the build. No uploading or account activation is performed by packaging.
+
+### FFmpeg and licensing
+
+The C++ engine/mixer compile and dynamically link against upstream's exact BtbN
+LGPL archive, declared in `source` with a real SHA-256. The current pin is
+`n8.1.2-34-g9b6c8969e0`; all seven shared libraries also match upstream's individual
+hashes. A changed upstream manifest stops preparation until the recipe is reviewed.
+Private libraries retain upstream `$ORIGIN` RPATH and unchanged bytes.
+
+Arch FFmpeg enables GPL components and uses a different ABI. We do not substitute
+it into the engine or weaken upstream's release license gate. FTHR itself is now
+GPL-3.0-only; older comments saying GPL FFmpeg would newly make it GPL are stale.
+Preserving the pinned LGPL engine is both the upstream build contract and the
+least surprising ABI choice. Native Qt/OpenCV use their distribution dependencies.
+
+Private `ffmpeg`/`ffprobe` commands are included as a fallback. Their archive has
+a broken `-Wl:../lib` RPATH, corrected to `$ORIGIN/../lib` during packaging; shared
+library hashes are unaffected. Upstream's source-mode resolver prefers
+`/usr/bin/ffmpeg` when present. That separate CLI behavior is preserved and does
+not change the engine's linkage. License verification covers the source tree and
+private FFmpeg provenance; an AppImage-only Qt-wheel gate is not applicable to
+the system Qt runtime.
+
+### Desktop and dependencies
+
+Both packages install `/usr/bin/fthr-clips`, a freedesktop entry and a 512px hicolor
+icon. The git desktop entry changes only `Exec=AppRun` to `Exec=fthr-clips`;
+upstream categories and identity remain intact, including the outstanding identity
+issue. No unmerged desktop PR is applied. Because the current frameless native
+Wayland window is invisible on KWin, the launcher selects `xcb` **only on KDE**
+unless `QT_QPA_PLATFORM` is already set. This necessary launch adaptation preserves
+`WAYLAND_DISPLAY`; it does not enable X11 capture in a Wayland session.
+
+Git runtime: `python`, `pyside6`, `qt6-multimedia`, `python-numpy`, `python-opencv`,
+`python-keyboard` (AUR), `glibc`, `gcc-libs`, `libpulse`, `wayland`, `ca-certificates`.
+Build: `base-devel`, `git`, `cmake`, `pkgconf`, `patchelf`, `licenses`,
+`python-installer`, `python-packaging`, `python-setuptools`.
+Tests: `python-pytest`, `python-pytest-qt`.
+
+Optional: `python-sounddevice` plus its PortAudio dependency for microphones;
+`pipewire-pulse` or `pulseaudio` for desktop audio; `grim` for screenshots on
+supported compositors; `openbsd-netcat` for compositor shortcut commands;
+`xdg-utils`; `xorg-xwayland` for the KDE UI fallback; GPU drivers and X11 helpers
+listed in each recipe. Wayland protocol XML is in upstream Git; no separate
+`wayland-protocols` build dependency is needed. No privileged groups are added.
+
+## Build, update and publish
 
 ```sh
-sudo pacman -S --needed base-devel git python squashfs-tools namcap desktop-file-utils
 git clone https://github.com/Vaspyyy/fthr-clips-aur.git
-cd fthr-clips-aur
+cd fthr-clips-aur/packages/fthr-clips-git
+# Install the AUR dependency first if building manually:
+paru -S --needed python-keyboard
 makepkg -si
-# Find and validate a newer upstream Linux release, including alpha/beta/rc:
-./maintenance/update.sh
-# Check only:
+# From repository root, validate either package:
+./maintenance/validate.sh fthr-clips-git
+./maintenance/validate.sh fthr-clips-bin
+# Existing release updater still defaults to the binary package:
 ./maintenance/update.sh --check
-# Full source, build, metadata, ELF, desktop, and advisory namcap checks:
-./maintenance/validate.sh
+./maintenance/update.sh
 ```
 
-GitHub `main` is authoritative. A daily GitHub Action and manual workflow dispatch
-look for the highest supported upstream version with the exact Linux x86_64
-AppImage. Windows-only releases are ignored. Alpha/beta/rc releases are deliberate;
-`1.1.0-alpha` becomes `1.1.0alpha`, which `vercmp` orders before beta, rc, and stable.
-There is no epoch. Unrecognized version/artifact naming fails for review.
+GitHub `main` is authoritative for both recipes. Each package has independent
+validation and AUR deployment: a development build failure does not block the
+release package. Publication copies only tracked files from the selected package
+directory into its own AUR Git repository, removes obsolete recipe files, and
+makes no commit when already synchronized. A stale workflow cannot overwrite
+newer package metadata. Do not edit the AUR repositories independently.
 
-The updater checks the adjacent official checksum and GitHub asset digest when
-provided, verifies the downloaded bytes, resets pkgrel, regenerates `.SRCINFO`,
-and builds as an ordinary user. Missing checksums, changed same-version artifacts,
-new launcher/layout, unsafe permissions/symlinks, or new external ELF libraries
-stop automation. Failed updates restore the original metadata.
+Build jobs have no AUR secret. Separate trusted-main deployment jobs use the
+existing dedicated `AUR_SSH_PRIVATE_KEY` and verified pinned AUR host key. AUR
+keys authorize the account, not a single package; revoke the dedicated key on
+AUR if retiring automation. CI bootstraps `python-keyboard` from a reviewed pinned
+AUR recipe, builds it as an unprivileged user and verifies its sources.
 
-Because these are experimental releases, automation opens an **update PR** instead
-of blindly promoting a new binary. Review upstream changes and perform a real
-desktop smoke test before merging. Existing update branches are never overwritten.
-CI is explicitly dispatched for bot-created PRs because GitHub suppresses ordinary
-PR events generated using `GITHUB_TOKEN`.
-
-After reviewed package changes reach `main`, a separate workflow rebuilds without
-AUR credentials, then publishes only `PKGBUILD`, `.SRCINFO`, and `LICENSE` through
-AUR Git. It uses the dedicated `AUR_SSH_PRIVATE_KEY` secret and a pinned SSH host
-key verified against AUR's published fingerprint. No private key is in Git.
-AUR account SSH keys are account credentials, not package-scoped deploy keys;
-revoke this dedicated key in the AUR profile if the automation is retired.
-Do not edit AUR independently: send packaging changes to GitHub first.
-
-Actions require repository permission to create pull requests and the dedicated
-public key registered on the maintainer's AUR account. To trigger monitoring now:
+The daily release monitor still ignores Windows-only releases, deliberately
+accepts Linux prereleases, compares official/API checksums, and opens a review PR.
+It fails safely on unexpected naming, checksums, or AppImage layout. Bot-created
+PR validation is explicitly dispatched. New releases require a desktop smoke test
+before merge. To force release monitoring:
 
 ```sh
 gh workflow run update.yml -R Vaspyyy/fthr-clips-aur
 ```
 
-The packaging/tooling is 0BSD. The application is GPL-3.0-only, generated artwork
-MIT, with bundled third-party licenses retained. See [TESTING.md](TESTING.md) for
-validation evidence and the limits of automated tests.
+VCS packages do **not** receive AUR commits just because upstream moves. Enable
+`Devel` in paru.conf (already enabled on the tested machine). Normal checks:
+
+```sh
+paru -Qua --devel              # check AUR/development updates
+paru -Syu --devel              # update system and development packages
+paru -S --rebuild fthr-clips-git # force a fresh development build
+```
+
+`git-build.yml` can build current upstream daily when repository variable
+`ENABLE_DAILY_GIT_BUILD=true`; manual dispatch always works. It validates only,
+with no release updater, commits, PRs or AUR deployment. Failed runs remain visible
+in GitHub Actions. To force that check:
+
+```sh
+gh workflow run git-build.yml -R Vaspyyy/fthr-clips-aur
+```
+
+Packaging/tooling is 0BSD. Application, artwork and bundled third-party notices
+are retained in the installed package; see each recipe's license metadata.
