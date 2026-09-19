@@ -54,6 +54,34 @@ The first lifecycle-tested package used the preliminary version
 correctly. Subsequent changes add license notices and an explicit pytest-qt
 `python-typing_extensions` test dependency; application code remains unchanged.
 
+### Clean Arch and automation checks
+
+Both packages build in a fresh `archlinux:base-devel` container using declared
+packages and the reviewed `python-keyboard` AUR bootstrap. Source retrieval and
+preparation finish first; Docker networking is then disconnected for build,
+tests and packaging. Both offline builds pass, including 1,008 Python tests,
+13 CTest passes and one hardware skip. Source verification with `--holdver`,
+metadata comparisons, desktop validation and ELF audits also pass. No `/workspace`
+paths appear in the installed payload. The maintenance suite has 32 passing tests.
+
+The migrated binary updater's live check finds `v1.1.0-alpha`, verifies its
+published digest and makes no changes. The [release-monitor run](https://github.com/Vaspyyy/fthr-clips-aur/actions/runs/35435502842)
+passes. Independent binary validation/publication also succeeds while git jobs
+run; unchanged binary metadata produces no AUR commit.
+
+Remote [package CI](https://github.com/Vaspyyy/fthr-clips-aur/actions/runs/35435493799),
+[both AUR deployments](https://github.com/Vaspyyy/fthr-clips-aur/actions/runs/35435493918),
+and the [development-branch check](https://github.com/Vaspyyy/fthr-clips-aur/actions/runs/35435501518)
+pass at `7e772c9`. A fresh public AUR clone matches all six tracked git recipe
+files byte for byte. The AUR page lists Ransom as maintainer. No fake upstream
+commit bump is published by the scheduled development check.
+
+Paru 2.1.0 has `Devel` enabled on the test machine. A probe using isolated
+`XDG_STATE_HOME` and cache directories records the actual upstream URL and
+`branch = "linux"`: the current commit yields no update, while an older upstream
+tag yields `fthr-clips-git ... -> latest-commit`. Real user tracking state is
+untouched by this probe; a normal paru installation registers its own baseline.
+
 ## Previously validated binary release
 
 Validated release: upstream `v1.1.0-alpha`, Arch `1.1.0alpha-2`, 2026-09-18.
