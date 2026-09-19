@@ -2,6 +2,31 @@
 # CI prerequisite only: python-keyboard is in AUR, not official Arch repositories.
 # Root installs the result; the pinned recipe/source are built as the CI builder.
 set -euo pipefail
+install_keyboard_archive() {
+  local listing archive name
+  local -a candidates=()
+  listing=$(runuser -u builder -- makepkg --packagelist)
+  while IFS= read -r archive; do
+    # makepkg may list a debug archive even when this pure-Python build did
+    # not produce one. Select the real runtime package by its own metadata.
+    [[ -s "$archive" ]] || continue
+    name=$(pacman -Qpq -- "$archive")
+    if [[ "$name" == python-keyboard ]]; then
+      candidates+=("$archive")
+    fi
+  done <<< "$listing"
+  if (( ${#candidates[@]} != 1 )); then
+    echo 'Expected exactly one existing python-keyboard package archive.' >&2
+    return 1
+  fi
+  pacman -U --noconfirm -- "${candidates[0]}"
+}
+
+# Permit offline tests to exercise selection without privileged build setup.
+if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
+  return
+fi
+
 if (( EUID != 0 )); then
   echo 'Run this CI bootstrap as root after creating the unprivileged builder.' >&2
   exit 1
@@ -19,7 +44,4 @@ runuser -u builder -- git -C "$temporary/python-keyboard" checkout --detach "$pi
 cd "$temporary/python-keyboard"
 runuser -u builder -- makepkg --verifysource --force --noconfirm
 runuser -u builder -- makepkg --cleanbuild --force --noconfirm
-mapfile -t archives < <(runuser -u builder -- makepkg --packagelist)
-(( ${#archives[@]} == 1 ))
-test -s "${archives[0]}"
-pacman -U --noconfirm -- "${archives[@]}"
+install_keyboard_archive
