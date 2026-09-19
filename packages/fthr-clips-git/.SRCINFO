@@ -62,6 +62,7 @@ pkgbase = fthr-clips-git
 	source = prepare-ffmpeg.py
 	source = fthr-clips
 	source = collect-uploader-licenses.py
+	source = liblzma-0BSD.txt
 	sha256sums = SKIP
 	sha256sums = c882a80f06617149198a98a07a0880a7e881953ae9f9cb931f5be09a4f93caae
 	sha256sums = a0fc5f6b3c55aa54353f0c74ffa59b1115433c1850c6f655d62b461a2ed6cbbe
@@ -69,6 +70,7 @@ pkgbase = fthr-clips-git
 	sha256sums = f3a22400bce1b0c701683820ac4f3b159cd301acab067c51c653e06961600597
 	sha256sums = 4a351c53faee8b004fae2a1b31d24bdbae444534996013f0e184ae9d3b367fc2
 	sha256sums = 090ef9fa5b6ac5de8a7fdf2be24f0d8bbc43c241375c76d7b23d9ccc4bed714a
-	sha256sums = f8d6667ecaff699548f95f82427c4f6f227bad8872f817fdf9d85da53839c2cb
+	sha256sums = 248fc13c182338eced319efdaa0137334f9a773fedaaf0380f35a28a65c40f2a
+	sha256sums = 0b01625d853911cd0e2e088dcfb743261034a091bb379246cb25a14cc4c74bf1
 
 pkgname = fthr-clips-git

@@ -50,6 +50,10 @@ def component_expression(name, binaries, expression, lzma_header=''):
 
 
 def package_licenses(name, expression):
+    if name == 'xz' and expression == '0BSD':
+        # Arch's official xz package omits this text. Vendored verbatim from
+        # tukaani-project/xz v5.8.4 COPYING.0BSD; PKGBUILD checksums this file.
+        return [Path(__file__).with_name('liblzma-0BSD.txt')]
     owned = [Path(line) for line in pacman('-Qlq', name).splitlines()]
     found = [path for path in owned
              if path.is_file() and path.is_relative_to('/usr/share/licenses')]

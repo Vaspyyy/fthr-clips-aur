@@ -38,6 +38,7 @@ source=(
   'prepare-ffmpeg.py'
   'fthr-clips'
   'collect-uploader-licenses.py'
+  'liblzma-0BSD.txt'
 )
 noextract=("${_ffmpeg}.tar.xz" 'pyinstaller-6.19.0-py3-none-manylinux2014_x86_64.whl'
            'pyinstaller_hooks_contrib-2026.4-py3-none-any.whl' 'altgraph-0.17.5-py2.py3-none-any.whl')
@@ -48,7 +49,8 @@ sha256sums=('SKIP'
             'f3a22400bce1b0c701683820ac4f3b159cd301acab067c51c653e06961600597'
             '4a351c53faee8b004fae2a1b31d24bdbae444534996013f0e184ae9d3b367fc2'
             '090ef9fa5b6ac5de8a7fdf2be24f0d8bbc43c241375c76d7b23d9ccc4bed714a'
-            'f8d6667ecaff699548f95f82427c4f6f227bad8872f817fdf9d85da53839c2cb')
+            '248fc13c182338eced319efdaa0137334f9a773fedaaf0380f35a28a65c40f2a'
+            '0b01625d853911cd0e2e088dcfb743261034a091bb379246cb25a14cc4c74bf1')
 
 pkgver() {
   cd FTHR-Clips
