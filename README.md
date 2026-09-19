@@ -53,8 +53,9 @@ The sole application source is
 `git+https://github.com/FTHR-Community/FTHR-Clips.git#branch=linux`.
 No fork, pending PR, or downstream feature patch is included. `pkgver()` uses
 `git describe --tags --long --abbrev=7`, normalizing `v1.1.0-alpha-3-g64a7b0b`
-to `1.1.0alpha.r3.g64a7b0b`. Keeping `alpha` attached makes pacman sort the
-prerelease below beta/rc/stable. Unrecognized tags fail for review; no epoch.
+to `1.1.0alpha0.r3.g64a7b0b`. Keeping `alpha` attached makes pacman sort the
+prerelease below beta/rc/stable. Unnumbered prereleases receive an explicit zero
+(`alpha0`) so later `alpha1`/`alpha2` also sort correctly. Unrecognized tags fail for review; no epoch.
 
 The engine and playback mixer build with CMake in Release mode. System Python,
 PySide6/Qt Multimedia, NumPy, OpenCV and `python-keyboard` run the UI directly.

@@ -3,7 +3,7 @@
 ## Development package and monorepo (2026-09-19)
 
 Source: upstream `linux` commit `64a7b0b35a22d9153259d3599e47ec0ed50efd8c`;
-package `1.1.0alpha.r3.g64a7b0b-1`. No pending PRs applied.
+package `1.1.0alpha0.r3.g64a7b0b-1`. No pending PRs applied.
 
 - All static source checksums pass; only Git uses SKIP.
 - Native Release build: 13 CTest contracts pass, VA-API hardware probe skips.

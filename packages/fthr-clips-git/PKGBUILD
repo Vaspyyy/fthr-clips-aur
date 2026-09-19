@@ -1,6 +1,6 @@
 # Maintainer: Vaspyyy <lolbautz2 at gmail dot com>
 pkgname=fthr-clips-git
-pkgver=1.1.0alpha.r3.g64a7b0b
+pkgver=1.1.0alpha0.r3.g64a7b0b
 pkgrel=1
 pkgdesc='Instant replay capture and clip management (upstream Linux development branch)'
 arch=('x86_64')
@@ -54,11 +54,17 @@ pkgver() {
   cd FTHR-Clips
   # Keep alpha/beta/rc attached to the numeric release so pacman orders them
   # below stable. Limit tags to the release vocabulary we deliberately support.
-  local description
+  local description release stage number revision commit
   description=$(git describe --tags --long --abbrev=7 --match 'v[0-9]*')
-  if [[ $description =~ ^v([0-9]+\.[0-9]+\.[0-9]+)(-(alpha|beta|rc)([.0-9]*))?-([0-9]+)-g([0-9a-f]+)$ ]]; then
-    printf '%s%s%s.r%s.g%s\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[3]}" \
-      "${BASH_REMATCH[4]}" "${BASH_REMATCH[5]}" "${BASH_REMATCH[6]}"
+  if [[ $description =~ ^v([0-9]+\.[0-9]+\.[0-9]+)(-(alpha|beta|rc)(\.?[0-9]+)?)?-([0-9]+)-g([0-9a-f]+)$ ]]; then
+    release=${BASH_REMATCH[1]} stage=${BASH_REMATCH[3]} number=${BASH_REMATCH[4]#.}
+    revision=${BASH_REMATCH[5]} commit=${BASH_REMATCH[6]}
+    # An explicit zero for an unnumbered prerelease keeps alpha0.rN below
+    # alpha1/alpha2. Pacman otherwise ranks alpha.rN above alpha2.
+    if [[ -n $stage ]]; then
+      release+="${stage}${number:-0}"
+    fi
+    printf '%s.r%s.g%s\n' "$release" "$revision" "$commit"
   else
     printf 'Unrecognized upstream release tag: %s\n' "$description" >&2
     return 1

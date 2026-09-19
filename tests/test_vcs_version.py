@@ -34,19 +34,19 @@ class VcsVersionTests(unittest.TestCase):
             commit()
             git('tag', 'v1.1.0-alpha')
             first = version()
-            self.assertEqual(first, '1.1.0alpha.r0.g' + git('rev-parse', '--short=7', 'HEAD'))
+            self.assertEqual(first, '1.1.0alpha0.r0.g' + git('rev-parse', '--short=7', 'HEAD'))
             commit()
             second = version()
-            self.assertEqual(second, '1.1.0alpha.r1.g' + git('rev-parse', '--short=7', 'HEAD'))
+            self.assertEqual(second, '1.1.0alpha0.r1.g' + git('rev-parse', '--short=7', 'HEAD'))
             self.assertLess(compare(first, second), 0)
             self.assertGreater(compare(second, '1.1.0alpha-2'), 0)
 
             previous = second
-            for tag, prefix in [('v1.1.0-alpha.2', '1.1.0alpha.2'),
-                                ('v1.1.0-beta', '1.1.0beta'),
+            for tag, prefix in [('v1.1.0-alpha.2', '1.1.0alpha2'),
+                                ('v1.1.0-beta', '1.1.0beta0'),
                                 ('v1.1.0-rc1', '1.1.0rc1'),
                                 ('v1.1.0', '1.1.0'),
-                                ('v1.2.0-alpha', '1.2.0alpha')]:
+                                ('v1.2.0-alpha', '1.2.0alpha0')]:
                 commit()
                 git('tag', tag)
                 current = version()

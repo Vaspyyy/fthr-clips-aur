@@ -1,6 +1,6 @@
 pkgbase = fthr-clips-git
 	pkgdesc = Instant replay capture and clip management (upstream Linux development branch)
-	pkgver = 1.1.0alpha.r3.g64a7b0b
+	pkgver = 1.1.0alpha0.r3.g64a7b0b
 	pkgrel = 1
 	url = https://github.com/FTHR-Community/FTHR-Clips
 	arch = x86_64
@@ -45,7 +45,7 @@ pkgbase = fthr-clips-git
 	optdepends = xdotool: X11 window detection
 	optdepends = xorg-xprop: X11 fullscreen detection
 	optdepends = xorg-xrandr: native X11 monitor geometry
-	provides = fthr-clips=1.1.0alpha.r3.g64a7b0b
+	provides = fthr-clips=1.1.0alpha0.r3.g64a7b0b
 	conflicts = fthr-clips
 	noextract = ffmpeg-n8.1.2-34-g9b6c8969e0-linux64-lgpl-shared-8.1.tar.xz
 	noextract = pyinstaller-6.19.0-py3-none-manylinux2014_x86_64.whl
