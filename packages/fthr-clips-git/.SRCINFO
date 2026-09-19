@@ -15,6 +15,7 @@ pkgbase = fthr-clips-git
 	license = 0BSD
 	checkdepends = python-pytest
 	checkdepends = python-pytest-qt
+	checkdepends = python-typing_extensions
 	makedepends = git
 	makedepends = cmake
 	makedepends = pkgconf

@@ -15,7 +15,7 @@ jobs:
           - package: fthr-clips-bin
             tools: git python squashfs-tools namcap desktop-file-utils glibc zlib libglvnd libdrm libxcb wayland
           - package: fthr-clips-git
-            tools: git python namcap desktop-file-utils pyside6 qt6-multimedia python-numpy python-opencv glibc gcc-libs libpulse wayland ca-certificates licenses patchelf cmake pkgconf python-installer python-packaging python-setuptools python-build python-wheel python-pytest python-pytest-qt
+            tools: git python namcap desktop-file-utils pyside6 qt6-multimedia python-numpy python-opencv glibc gcc-libs libpulse wayland ca-certificates licenses patchelf cmake pkgconf python-installer python-packaging python-setuptools python-build python-wheel python-pytest python-pytest-qt python-typing_extensions
     runs-on: ubuntu-latest
     container: archlinux:base-devel
     steps:

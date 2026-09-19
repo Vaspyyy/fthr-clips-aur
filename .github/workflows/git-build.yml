@@ -16,7 +16,7 @@ jobs:
     container: archlinux:base-devel
     steps:
       - name: Install Arch tools
-        run: pacman -Syu --noconfirm --needed git python namcap desktop-file-utils pyside6 qt6-multimedia python-numpy python-opencv glibc gcc-libs libpulse wayland ca-certificates licenses patchelf cmake pkgconf python-installer python-packaging python-setuptools python-build python-wheel python-pytest python-pytest-qt
+        run: pacman -Syu --noconfirm --needed git python namcap desktop-file-utils pyside6 qt6-multimedia python-numpy python-opencv glibc gcc-libs libpulse wayland ca-certificates licenses patchelf cmake pkgconf python-installer python-packaging python-setuptools python-build python-wheel python-pytest python-pytest-qt python-typing_extensions
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: main

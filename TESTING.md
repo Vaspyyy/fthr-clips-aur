@@ -24,12 +24,35 @@ package `1.1.0alpha0.r3.g64a7b0b-1`. No pending PRs applied.
 - The binary recipe and metadata are byte-identical to their pre-migration
   versions. Its runtime behavior is unchanged.
 
-Pre-install desktop smoke: native Wayland window remains invisible on KWin;
-xcb opens a visible window, so the launcher keeps a KDE-only UI fallback.
-Engine/mixer paths resolve, PortAudio microphone capture starts, and PulseAudio
-captures the default monitor at 48 kHz stereo. Replay still fails at absent KWin
-capture protocols before encoder selection. Screenshot IPC reaches grim and
-the Qt fallback. Installed-package evidence is recorded after lifecycle testing.
+Installed-package testing on KDE Wayland + RTX 3070:
+
+- User-authorized pacman lifecycle script passed bin → git → bin → git and
+  removal/reinstallation. Checksums of every pre-existing FTHR settings/clip file
+  were unchanged by the transactions, including custom clip directories.
+- `pacman -Qi`, `-Ql`, and `-Qkk` inspected: 205 files, zero altered files in the
+  first installed payload. All owned paths are under `/usr`.
+- Both terminal launch and KDE's installed desktop entry open a visible UI.
+  KService resolves the correct name, executable and theme icon. Native Wayland
+  remains invisible on KWin, so the launcher keeps a KDE-only xcb fallback.
+- Engine and playback mixer resolve at their installed source-style paths.
+  PortAudio microphone capture starts; PulseAudio captures the default monitor
+  at 48 kHz stereo. Loading OpenCV before the mixer also succeeds.
+- Screenshot IPC reaches grim, which rejects KWin's unsupported protocol; Qt's
+  fallback produces a black PNG. Replay reaches the engine, then fails at absent
+  KWin capture protocols before encoder selection. Neither improves over bin.
+- The window has an icon, but its desktop identity still resolves to `python3`;
+  task-manager grouping remains an upstream limitation. No pending desktop PR
+  is applied. Desktop validation accepts upstream's multiple-category hint.
+- The sealed optional uploader and its licenses were validated; no upload or
+  account activation was performed. Test app processes were closed afterward.
+- Direct private FFmpeg/ffprobe commands work from outside their install directory;
+  a one-second OpenH264/AAC encode probes as 1.000000 seconds. The original archive's
+  malformed CLI RPATH is reported in [upstream issue #30](https://github.com/FTHR-Community/FTHR-Clips/issues/30).
+
+The first lifecycle-tested package used the preliminary version
+`1.1.0alpha.r3.g64a7b0b-1`; final metadata adds `alpha0` to order numbered alphas
+correctly. Subsequent changes add license notices and an explicit pytest-qt
+`python-typing_extensions` test dependency; application code remains unchanged.
 
 ## Previously validated binary release
 

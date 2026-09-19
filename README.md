@@ -89,7 +89,7 @@ least surprising ABI choice. Native Qt/OpenCV use their distribution dependencie
 
 Private `ffmpeg`/`ffprobe` commands are included as a fallback. Their archive has
 a broken `-Wl:../lib` RPATH, corrected to `$ORIGIN/../lib` during packaging; shared
-library hashes are unaffected. Upstream's source-mode resolver prefers
+library hashes are unaffected ([upstream issue #30](https://github.com/FTHR-Community/FTHR-Clips/issues/30)). Upstream's source-mode resolver prefers
 `/usr/bin/ffmpeg` when present. That separate CLI behavior is preserved and does
 not change the engine's linkage. License verification covers the source tree and
 private FFmpeg provenance; an AppImage-only Qt-wheel gate is not applicable to
@@ -109,7 +109,7 @@ Git runtime: `python`, `pyside6`, `qt6-multimedia`, `python-numpy`, `python-open
 `python-keyboard` (AUR), `glibc`, `gcc-libs`, `libpulse`, `wayland`, `ca-certificates`.
 Build: `base-devel`, `git`, `cmake`, `pkgconf`, `patchelf`, `licenses`,
 `python-installer`, `python-packaging`, `python-setuptools`.
-Tests: `python-pytest`, `python-pytest-qt`.
+Tests: `python-pytest`, `python-pytest-qt`, `python-typing_extensions`.
 
 Optional: `python-sounddevice` plus its PortAudio dependency for microphones;
 `pipewire-pulse` or `pulseaudio` for desktop audio; `grim` for screenshots on
