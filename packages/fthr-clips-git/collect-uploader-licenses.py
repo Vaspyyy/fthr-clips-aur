@@ -36,6 +36,19 @@ def package_info(name):
     return fields['Version'], fields['Licenses']
 
 
+def component_expression(name, binaries, expression, lzma_header=''):
+    # xz's package expression also covers command-line tools and scripts. Only
+    # liblzma is frozen here; require explicit evidence from the installed API.
+    if name == 'xz':
+        if not binaries or any(not item.startswith('liblzma.so.') for item in binaries):
+            raise RuntimeError('Unexpected xz component in uploader')
+        if ('SPDX-License-Identifier: 0BSD' not in lzma_header or
+                'liblzma is distributed under the BSD Zero Clause License (0BSD).' not in lzma_header):
+            raise RuntimeError('Installed liblzma license evidence changed')
+        return '0BSD'
+    return expression
+
+
 def package_licenses(name, expression):
     owned = [Path(line) for line in pacman('-Qlq', name).splitlines()]
     found = [path for path in owned
@@ -105,6 +118,11 @@ def main():
     evidence = []
     for owner, binaries in sorted(owners.items()):
         version, licenses = package_info(owner)
+        header = Path('/usr/include/lzma.h')
+        if owner == 'xz' and pacman('-Qoq', str(header)) != 'xz':
+            raise RuntimeError('liblzma API license evidence is not owned by xz')
+        licenses = component_expression(owner, binaries, licenses,
+                                        header.read_text() if owner == 'xz' else '')
         evidence.append((owner, version, licenses, sorted(binaries),
                          package_licenses(owner, licenses)))
     args.output.mkdir(parents=True, exist_ok=True)

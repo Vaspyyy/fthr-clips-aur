@@ -12,6 +12,7 @@ pkgbase = fthr-clips-git
 	license = Apache-2.0
 	license = BSD-3-Clause
 	license = Zlib
+	license = 0BSD
 	checkdepends = python-pytest
 	checkdepends = python-pytest-qt
 	makedepends = git
@@ -68,6 +69,6 @@ pkgbase = fthr-clips-git
 	sha256sums = f3a22400bce1b0c701683820ac4f3b159cd301acab067c51c653e06961600597
 	sha256sums = 4a351c53faee8b004fae2a1b31d24bdbae444534996013f0e184ae9d3b367fc2
 	sha256sums = 090ef9fa5b6ac5de8a7fdf2be24f0d8bbc43c241375c76d7b23d9ccc4bed714a
-	sha256sums = 519bc36506c901d58800976def41cc5c3487672181076667b189a8371eb30361
+	sha256sums = f8d6667ecaff699548f95f82427c4f6f227bad8872f817fdf9d85da53839c2cb
 
 pkgname = fthr-clips-git
