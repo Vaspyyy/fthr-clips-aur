@@ -82,6 +82,14 @@ Paru 2.1.0 has `Devel` enabled on the test machine. A probe using isolated
 tag yields `fthr-clips-git ... -> latest-commit`. Real user tracking state is
 untouched by this probe; a normal paru installation registers its own baseline.
 
+Final end-to-end installation used `paru -S --rebuild --redownload fthr-clips-git`
+from the public AUR (`dcead82`). Installed version is
+`1.1.0alpha0.r3.g64a7b0b-1`; `pacman -Qkk` reports 205 files and zero alterations.
+Paru's real `devel.toml` now records the upstream URL, `branch = "linux"`, and
+`64a7b0b35a22d9153259d3599e47ec0ed50efd8c`. Its development check reports no update
+at that commit. Terminal launch was repeated on this final build: visible UI,
+correct engine discovery, resolved libraries, microphone and PulseAudio detection.
+
 ## Previously validated binary release
 
 Validated release: upstream `v1.1.0-alpha`, Arch `1.1.0alpha-2`, 2026-09-18.
