@@ -18,11 +18,13 @@ They both provide/conflict with `fthr-clips`; pacman removes the installed varia
 when you approve the switch. Neither replaces nor obsoletes the other. Packages
 never own or remove `~/.fthr`, `~/FTHR_Clips`, or user-selected clip directories.
 
-**Linux alpha:** KWin currently exposes neither capture protocol implemented by
-FTHR. There is no ScreenCast portal video backend; replay fails before encoder
-selection. Screenshots also fail on this tested KDE desktop. These limitations
-remain in both variants; see [issue #20](https://github.com/FTHR-Community/FTHR-Clips/issues/20)
-and [TESTING.md](TESTING.md). No downstream KWin backend is added.
+**KDE capture now works in `fthr-clips-git`:** upstream's ScreenCast/PipeWire
+backend was tested on Plasma/KWin Wayland with an RTX 3070. A saved 1440p replay
+contains real frames and audio; see [the confirmation on issue #20](https://github.com/FTHR-Community/FTHR-Clips/issues/20#issuecomment-5799875562)
+and [TESTING.md](TESTING.md). Install `pipewire`, `dbus`, `xdg-desktop-portal` and
+`xdg-desktop-portal-kde`, then approve the monitor in KDE's screen picker.
+Screenshots remain a separate grim/Qt path and are not covered by this success.
+The currently packaged binary release is still `1.1.0-alpha`, without this backend.
 
 ## Repository layout
 
@@ -61,8 +63,12 @@ The engine and playback mixer build with CMake in Release mode. System Python,
 PySide6/Qt Multimedia, NumPy, OpenCV and `python-keyboard` run the UI directly.
 The private source-style layout under `/usr/lib/fthr-clips` preserves upstream
 engine, mixer and asset discovery without rewriting application code. Arch's
-OpenCV 5 is newer than upstream's release lock: the complete upstream test suite
-and actual launch are checked, and scheduled builds catch later incompatibility.
+OpenCV 5 is newer than upstream's release lock: upstream's Python suite and
+actual launch are checked, and scheduled builds catch later incompatibility.
+The Windows-only installer contract is explicitly excluded from this Linux
+package; all other tests, source checksums and license gates remain enabled.
+The exact-whitespace failure is addressed separately in [upstream PR #46](https://github.com/FTHR-Community/FTHR-Clips/pull/46);
+that pending change is not applied to the application source here.
 The native layout avoids PyInstaller's wheel-specific Qt plugin assumptions.
 
 Only the optional uploader follows upstream's frozen build, preserving its
@@ -89,7 +95,8 @@ least surprising ABI choice. Native Qt/OpenCV use their distribution dependencie
 
 Private `ffmpeg`/`ffprobe` commands are included as a fallback. Their archive has
 a broken `-Wl:../lib` RPATH, corrected to `$ORIGIN/../lib` during packaging; shared
-library hashes are unaffected ([upstream issue #30](https://github.com/FTHR-Community/FTHR-Clips/issues/30)). Upstream's source-mode resolver prefers
+library hashes are unaffected. Upstream has also fixed its fetch path
+([upstream issue #30](https://github.com/FTHR-Community/FTHR-Clips/issues/30)). Upstream's source-mode resolver prefers
 `/usr/bin/ffmpeg` when present. That separate CLI behavior is preserved and does
 not change the engine's linkage. License verification covers the source tree and
 private FFmpeg provenance; an AppImage-only Qt-wheel gate is not applicable to
@@ -100,16 +107,25 @@ the system Qt runtime.
 Both packages install `/usr/bin/fthr-clips`, a freedesktop entry and a 512px hicolor
 icon. The git desktop entry changes only `Exec=AppRun` to `Exec=fthr-clips`;
 upstream categories and identity remain intact, including the outstanding identity
-issue. No unmerged desktop PR is applied. Because the current frameless native
-Wayland window is invisible on KWin, the launcher selects `xcb` **only on KDE**
-unless `QT_QPA_PLATFORM` is already set. This necessary launch adaptation preserves
-`WAYLAND_DISPLAY`; it does not enable X11 capture in a Wayland session.
+issue. No unmerged desktop PR is applied. The launcher retains the tested `xcb`
+UI fallback **only on KDE**, unless `QT_QPA_PLATFORM` is already set. It was added
+for the initial release's invisible native Wayland window; newer upstream window
+fixes have not yet been qualified in native mode by this package. The fallback
+preserves `WAYLAND_DISPLAY`, and portal capture works with it.
 
 Git runtime: `python`, `pyside6`, `qt6-multimedia`, `python-numpy`, `python-opencv`,
 `python-keyboard` (AUR), `glibc`, `gcc-libs`, `libpulse`, `wayland`, `ca-certificates`.
 Build: `base-devel`, `git`, `cmake`, `pkgconf`, `patchelf`, `licenses`,
-`python-installer`, `python-packaging`, `python-setuptools`.
+`python-installer`, `python-packaging`, `python-setuptools`, `libpipewire`, `dbus`.
+PipeWire/D-Bus headers are required to compile the explicitly enabled portal backend.
+The libraries are loaded dynamically; other capture backends do not require a
+running portal service.
 Tests: `python-pytest`, `python-pytest-qt`, `python-typing_extensions`.
+
+For **KDE portal capture**, install `pipewire` (including `libpipewire`), `dbus`,
+`xdg-desktop-portal` and `xdg-desktop-portal-kde`. Other desktops need their own
+ScreenCast-capable portal backend. These are optional capture-path requirements,
+not universal application-startup requirements.
 
 Optional: `python-sounddevice` plus its PortAudio dependency for microphones;
 `pipewire-pulse` or `pulseaudio` for desktop audio; `grim` for screenshots on
@@ -151,7 +167,9 @@ The daily release monitor still ignores Windows-only releases, deliberately
 accepts Linux prereleases, compares official/API checksums, and opens a review PR.
 It fails safely on unexpected naming, checksums, or AppImage layout. Bot-created
 PR validation is explicitly dispatched. New releases require a desktop smoke test
-before merge. To force release monitoring:
+before merge. The newer `v1.1.1-alpha` artifact currently changes the reviewed
+AppRun launcher checksum, so the binary update is intentionally blocked pending
+artifact review; no integrity gate is disabled. To force release monitoring:
 
 ```sh
 gh workflow run update.yml -R Vaspyyy/fthr-clips-aur

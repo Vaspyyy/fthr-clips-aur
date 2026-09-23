@@ -134,6 +134,18 @@ class PackageTests(unittest.TestCase):
             installed = set(tool_lines[0].split())
             self.assertFalse(required - installed, f'{name}: missing {required - installed}')
 
+    def test_portal_build_and_runtime_requirements(self):
+        recipe = ROOT / 'packages/fthr-clips-git'
+        data = fields((recipe / '.SRCINFO').read_text())
+        self.assertTrue({'libpipewire', 'dbus'} <= set(data['makedepends']))
+        optional = {item.split(':', 1)[0] for item in data['optdepends']}
+        self.assertTrue({'pipewire', 'dbus', 'xdg-desktop-portal',
+                         'xdg-desktop-portal-kde'} <= optional)
+        text = (recipe / 'PKGBUILD').read_text()
+        self.assertIn('-DFTHR_PORTAL_BACKEND=ON', text)
+        self.assertNotIn('--nocheck', text)
+        self.assertNotIn('--skipchecksums', text)
+
     def test_updater_only_targets_binary_recipe(self):
         spec = importlib.util.spec_from_file_location('package_update', ROOT / 'maintenance/update.py')
         updater = importlib.util.module_from_spec(spec)

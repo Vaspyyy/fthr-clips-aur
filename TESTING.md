@@ -1,5 +1,48 @@
 # Validation notes
 
+## KDE portal capture and update recovery (2026-09-23)
+
+Current upstream `linux`: `220893176d23c0e4ba27864e279a59f82210df33`.
+Installed/tested package: `1.1.1alpha0.r10.g2208931-1` (UI reports `1.1.2-alpha`;
+pkgver follows the latest reachable release tag plus Git revisions).
+The dependency refresh uses pkgrel 2; it does not change application code or
+replace this working local installation automatically.
+
+- CachyOS, Plasma/KWin 6.7.5 Wayland, RTX 3070 / NVIDIA 615.71.09,
+  PipeWire 1.6.9, D-Bus 1.16.2, xdg-desktop-portal 1.22.1, KDE backend 6.7.5.
+- User approved the ScreenCast monitor picker. The engine changed to HEALTHY
+  with progressing frames; the UI showed CAPTURING and active `h264_nvenc — P4`.
+- The existing hotkey socket's `save_clip` command saved a 26.65-second MP4
+  (the 30-second buffer had not filled yet): 2560×1440, approximately 60 FPS,
+  H.264 video plus 48 kHz stereo AAC. The app confirmed microphone mixing.
+- Start/middle/end frames decoded with grayscale means 62.60/58.36/56.69 and
+  standard deviations 65.20/61.22/62.40: actual image content, not black frames.
+  The user independently confirmed successful operation.
+- Package integrity: 207 files, zero alterations. Eleven native ELF files pass
+  the dependency/layout audit. Paru's tracked upstream commit was synchronized
+  with the installed build after the manual pacman transaction; other entries
+  were preserved, and a development check reports no update at that commit.
+- Shared success evidence on [issue #20](https://github.com/FTHR-Community/FTHR-Clips/issues/20#issuecomment-5799875562).
+  No private clip or screen image was uploaded. The issue remains with upstream
+  for disposition. Screenshots, global F9 registration, permission denial/token
+  restoration and long-session performance were not retested.
+
+The update failure was a Windows installer source-contract test comparing exact
+spaces around a version definition. The values matched. All 15 runnable native
+tests and 1,047 other Python tests passed (one native and 15 Python skips).
+A separate in-memory, whitespace-tolerant check verified every installer source
+contract before the one-off local `--nocheck` build. Source integrity and license
+gates still ran. The public recipe already excludes only that Windows installer
+test file (maintenance PR #1); no broad test bypass is stored in the package.
+[Upstream PR #46](https://github.com/FTHR-Community/FTHR-Clips/pull/46) fixes the
+checker itself, with 14 passing contract/regression tests. It is not bundled as
+a downstream application patch.
+
+The git recipe now declares PipeWire/D-Bus header dependencies, explicitly enables
+the portal backend, documents the optional runtime services, and has a regression
+check for this build/metadata contract. The older results below describe the
+initial release and must not be read as current portal-capture limitations.
+
 ## Development package and monorepo (2026-09-19)
 
 Source: upstream `linux` commit `64a7b0b35a22d9153259d3599e47ec0ed50efd8c`;
