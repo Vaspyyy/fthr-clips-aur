@@ -24,7 +24,8 @@ contains real frames and audio; see [the confirmation on issue #20](https://gith
 and [TESTING.md](TESTING.md). Install `pipewire`, `dbus`, `xdg-desktop-portal` and
 `xdg-desktop-portal-kde`, then approve the monitor in KDE's screen picker.
 Screenshots remain a separate grim/Qt path and are not covered by this success.
-The currently packaged binary release is still `1.1.0-alpha`, without this backend.
+The binary release `1.1.1-alpha` also ships this backend (the engine `dlopen`s
+PipeWire and D-Bus), but it has not been separately capture-tested on KDE.
 
 ## Repository layout
 
@@ -167,9 +168,9 @@ The daily release monitor still ignores Windows-only releases, deliberately
 accepts Linux prereleases, compares official/API checksums, and opens a review PR.
 It fails safely on unexpected naming, checksums, or AppImage layout. Bot-created
 PR validation is explicitly dispatched. New releases require a desktop smoke test
-before merge. The newer `v1.1.1-alpha` artifact currently changes the reviewed
-AppRun launcher checksum, so the binary update is intentionally blocked pending
-artifact review; no integrity gate is disabled. To force release monitoring:
+before merge. A release that changes the reviewed AppRun launcher checksum fails
+the monitor until the launcher is reviewed and its pin updated in the recipe; no
+integrity gate is disabled. To force release monitoring:
 
 ```sh
 gh workflow run update.yml -R Vaspyyy/fthr-clips-aur
