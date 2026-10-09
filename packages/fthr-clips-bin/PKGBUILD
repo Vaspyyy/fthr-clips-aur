@@ -1,8 +1,8 @@
 # Maintainer: Vaspyyy <lolbautz2 at gmail dot com>
 pkgname=fthr-clips-bin
-pkgver=1.1.1alpha
+pkgver=1.1.2alpha
 pkgrel=1
-_upstream_version=1.1.1-alpha
+_upstream_version=1.1.2-alpha
 pkgdesc='Instant replay capture and clip management (official Linux binary)'
 arch=('x86_64')
 url='https://github.com/FTHR-Community/FTHR-Clips'
@@ -32,7 +32,7 @@ conflicts=('fthr-clips')
 options=('!strip' '!debug')
 source=("FTHRClips-${_upstream_version}-x86_64.AppImage::https://github.com/FTHR-Community/FTHR-Clips/releases/download/v${_upstream_version}/FTHRClips-${_upstream_version}-x86_64.AppImage")
 noextract=("FTHRClips-${_upstream_version}-x86_64.AppImage")
-sha256sums=('12c0140d360e0ec1f8815b1ba167ba5ea21b6657be119345f375708e2c02c5f9')
+sha256sums=('ec7a9312e619b3f232ef3e56cddfcb0ff50954a3906bc1ed196b26979380ca56')
 
 prepare() {
   # Read the ELF boundary without executing the downloaded AppImage runtime.

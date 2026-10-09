@@ -1,6 +1,6 @@
 pkgbase = fthr-clips-bin
 	pkgdesc = Instant replay capture and clip management (official Linux binary)
-	pkgver = 1.1.1alpha
+	pkgver = 1.1.2alpha
 	pkgrel = 1
 	url = https://github.com/FTHR-Community/FTHR-Clips
 	arch = x86_64
@@ -30,12 +30,12 @@ pkgbase = fthr-clips-bin
 	optdepends = xdotool: X11 window detection
 	optdepends = xorg-xprop: X11 fullscreen detection
 	optdepends = xorg-xrandr: native X11 monitor geometry
-	provides = fthr-clips=1.1.1alpha
+	provides = fthr-clips=1.1.2alpha
 	conflicts = fthr-clips
-	noextract = FTHRClips-1.1.1-alpha-x86_64.AppImage
+	noextract = FTHRClips-1.1.2-alpha-x86_64.AppImage
 	options = !strip
 	options = !debug
-	source = FTHRClips-1.1.1-alpha-x86_64.AppImage::https://github.com/FTHR-Community/FTHR-Clips/releases/download/v1.1.1-alpha/FTHRClips-1.1.1-alpha-x86_64.AppImage
-	sha256sums = 12c0140d360e0ec1f8815b1ba167ba5ea21b6657be119345f375708e2c02c5f9
+	source = FTHRClips-1.1.2-alpha-x86_64.AppImage::https://github.com/FTHR-Community/FTHR-Clips/releases/download/v1.1.2-alpha/FTHRClips-1.1.2-alpha-x86_64.AppImage
+	sha256sums = ec7a9312e619b3f232ef3e56cddfcb0ff50954a3906bc1ed196b26979380ca56
 
 pkgname = fthr-clips-bin
