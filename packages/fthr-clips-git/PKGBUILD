@@ -79,6 +79,14 @@ pkgver() {
 
 prepare() {
   python prepare-ffmpeg.py FTHR-Clips "${_ffmpeg}.tar.xz"
+  # BtbN's tools carry the broken relative RPATH "-Wl:../lib". Relocate only
+  # these executables before upstream's release gate inspects them in build();
+  # upstream's checksum-pinned shared libraries stay intact.
+  local tool
+  for tool in ffmpeg ffprobe; do
+    patchelf --force-rpath --set-rpath '$ORIGIN/../lib' \
+      "FTHR-Clips/FTHRcapture_linux/third_party/ffmpeg/bin/$tool"
+  done
 }
 
 build() {
@@ -130,13 +138,6 @@ package() {
   install -d "$root/FTHRcapture_linux/third_party/ffmpeg/bin"
   install -m755 FTHRcapture_linux/third_party/ffmpeg/bin/{ffmpeg,ffprobe} \
     "$root/FTHRcapture_linux/third_party/ffmpeg/bin/"
-  # BtbN's tools carry the broken relative RPATH "-Wl:../lib". Relocate only
-  # these executables; upstream's checksum-pinned shared libraries stay intact.
-  local tool
-  for tool in ffmpeg ffprobe; do
-    patchelf --force-rpath --set-rpath '$ORIGIN/../lib' \
-      "$root/FTHRcapture_linux/third_party/ffmpeg/bin/$tool"
-  done
   install -Dm644 plugin-packages/FTHR-Uploader-linux.fthrplugin \
     "$root/plugin-packages/FTHR-Uploader-linux.fthrplugin"
   install -Dm755 "$srcdir/fthr-clips" "$pkgdir/usr/bin/fthr-clips"

@@ -1,8 +1,8 @@
 # Maintainer: Vaspyyy <lolbautz2 at gmail dot com>
 pkgname=fthr-clips-bin
-pkgver=1.1.1alpha
+pkgver=1.1.3alpha
 pkgrel=1
-_upstream_version=1.1.1-alpha
+_upstream_version=1.1.3-alpha
 pkgdesc='Instant replay capture and clip management (official Linux binary)'
 arch=('x86_64')
 url='https://github.com/FTHR-Community/FTHR-Clips'
@@ -32,7 +32,7 @@ conflicts=('fthr-clips')
 options=('!strip' '!debug')
 source=("FTHRClips-${_upstream_version}-x86_64.AppImage::https://github.com/FTHR-Community/FTHR-Clips/releases/download/v${_upstream_version}/FTHRClips-${_upstream_version}-x86_64.AppImage")
 noextract=("FTHRClips-${_upstream_version}-x86_64.AppImage")
-sha256sums=('12c0140d360e0ec1f8815b1ba167ba5ea21b6657be119345f375708e2c02c5f9')
+sha256sums=('d44ffafcbc30efbd8342c739f699bde711cf2fdef687d6487229cc0bb02ecc33')
 
 prepare() {
   # Read the ELF boundary without executing the downloaded AppImage runtime.
@@ -53,7 +53,7 @@ PY
   rm -rf squashfs-root
   unsquashfs -no-progress -d squashfs-root -o "$_offset" "${noextract[0]}"
   # Fail closed on launcher/layout changes: a new release needs review.
-  echo 'a1bd02202fa82b8e1caeff603b491f774733b2005e40d70ba3fe2f71a4e6ea4b  squashfs-root/AppRun' | sha256sum -c -
+  echo 'faed271eaf6378d98c8bf503a36d20582391e8fb4ba4e11d25557dfc2b4ed185  squashfs-root/AppRun' | sha256sum -c -
   python - <<'PY'
 from pathlib import Path
 import stat
