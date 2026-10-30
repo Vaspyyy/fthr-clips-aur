@@ -46,9 +46,11 @@ LICENSE
 The release recipe is unchanged by the monorepo migration. It verifies the
 published SHA-256, extracts the AppImage without executing it, and preserves its
 private PyInstaller/Qt/engine tree under `/usr/lib/fthr-clips`. It requires neither
-FUSE nor AppImageLauncher. Its desktop identity corrections and KDE UI fallback
-are retained. Runtime dependencies are `glibc`, `gcc-libs` (upstream stopped
-bundling libstdc++/libgcc_s in 1.1.3-alpha), `zlib`, `libglvnd`, `libdrm`,
+FUSE nor AppImageLauncher. Upstream's launcher now selects native Wayland
+itself; the former KDE `xcb` fallback was dropped after XWayland stopped opening
+the 1.1.3-alpha dropdown popups on KWin. Runtime dependencies are `glibc`,
+`gcc-libs` (upstream stopped bundling libstdc++/libgcc_s in 1.1.3-alpha), `zlib`,
+`libglvnd`, `libdrm`,
 `libxcb`, and `wayland`; system Python/Qt are build-only or unnecessary.
 
 ## Development package
@@ -109,11 +111,10 @@ the system Qt runtime.
 Both packages install `/usr/bin/fthr-clips`, a freedesktop entry and a 512px hicolor
 icon. The git desktop entry changes only `Exec=AppRun` to `Exec=fthr-clips`;
 upstream categories and identity remain intact, including the outstanding identity
-issue. No unmerged desktop PR is applied. The launcher retains the tested `xcb`
-UI fallback **only on KDE**, unless `QT_QPA_PLATFORM` is already set. It was added
-for the initial release's invisible native Wayland window; newer upstream window
-fixes have not yet been qualified in native mode by this package. The fallback
-preserves `WAYLAND_DISPLAY`, and portal capture works with it.
+issue. No unmerged desktop PR is applied. The launcher no longer forces the `xcb`
+UI backend on KDE: native Wayland was requalified on KWin with 1.1.3-alpha, where
+XWayland left the top-bar dropdown popups unopenable. `QT_QPA_PLATFORM=xcb` can
+still be set manually.
 
 Git runtime: `python`, `pyside6`, `qt6-multimedia`, `python-numpy`, `python-opencv`,
 `python-keyboard` (AUR), `glibc`, `gcc-libs`, `libpulse`, `wayland`, `ca-certificates`.
@@ -132,7 +133,7 @@ not universal application-startup requirements.
 Optional: `python-sounddevice` plus its PortAudio dependency for microphones;
 `pipewire-pulse` or `pulseaudio` for desktop audio; `grim` for screenshots on
 supported compositors; `openbsd-netcat` for compositor shortcut commands;
-`xdg-utils`; `xorg-xwayland` for the KDE UI fallback; GPU drivers and X11 helpers
+`xdg-utils`; GPU drivers and X11 helpers
 listed in each recipe. Wayland protocol XML is in upstream Git; no separate
 `wayland-protocols` build dependency is needed. No privileged groups are added.
 

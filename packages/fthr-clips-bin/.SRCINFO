@@ -24,7 +24,6 @@ pkgbase = fthr-clips-bin
 	optdepends = grim: screenshots on supported Wayland compositors
 	optdepends = openbsd-netcat: compositor hotkey socket commands
 	optdepends = ffmpeg: clip export and video thumbnails
-	optdepends = xorg-xwayland: KDE UI fallback for the upstream native Wayland window bug
 	optdepends = xdg-utils: open the clips folder
 	optdepends = libva-mesa-driver: AMD VA-API encoding
 	optdepends = nvidia-utils: NVIDIA NVENC encoding (upstream unqualified)
