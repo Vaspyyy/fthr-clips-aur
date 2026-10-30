@@ -17,7 +17,7 @@ jobs:
       matrix:
         include:
           - package: fthr-clips-bin
-            tools: git python squashfs-tools namcap desktop-file-utils glibc zlib libglvnd libdrm libxcb wayland
+            tools: git python squashfs-tools namcap desktop-file-utils glibc gcc-libs zlib libglvnd libdrm libxcb wayland
           - package: fthr-clips-git
             tools: git python namcap desktop-file-utils pyside6 qt6-multimedia python-numpy python-opencv libpipewire dbus glibc gcc-libs libpulse wayland ca-certificates licenses patchelf cmake pkgconf python-installer python-packaging python-setuptools python-build python-wheel python-pytest python-pytest-qt python-typing_extensions
     uses: ./.github/workflows/publish-package.yml
