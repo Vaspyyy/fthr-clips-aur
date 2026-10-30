@@ -7,7 +7,7 @@ pkgdesc='Instant replay capture and clip management (official Linux binary)'
 arch=('x86_64')
 url='https://github.com/FTHR-Community/FTHR-Clips'
 license=('GPL-3.0-only' 'MIT')
-depends=('glibc' 'zlib' 'libglvnd' 'libdrm' 'libxcb' 'wayland')
+depends=('glibc' 'gcc-libs' 'zlib' 'libglvnd' 'libdrm' 'libxcb' 'wayland')
 makedepends=('python' 'squashfs-tools')
 optdepends=(
   'pipewire: ScreenCast portal capture server and runtime library'

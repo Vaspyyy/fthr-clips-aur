@@ -9,6 +9,7 @@ pkgbase = fthr-clips-bin
 	makedepends = python
 	makedepends = squashfs-tools
 	depends = glibc
+	depends = gcc-libs
 	depends = zlib
 	depends = libglvnd
 	depends = libdrm

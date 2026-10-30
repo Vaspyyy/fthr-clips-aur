@@ -47,7 +47,8 @@ The release recipe is unchanged by the monorepo migration. It verifies the
 published SHA-256, extracts the AppImage without executing it, and preserves its
 private PyInstaller/Qt/engine tree under `/usr/lib/fthr-clips`. It requires neither
 FUSE nor AppImageLauncher. Its desktop identity corrections and KDE UI fallback
-are retained. Runtime dependencies are `glibc`, `zlib`, `libglvnd`, `libdrm`,
+are retained. Runtime dependencies are `glibc`, `gcc-libs` (upstream stopped
+bundling libstdc++/libgcc_s in 1.1.3-alpha), `zlib`, `libglvnd`, `libdrm`,
 `libxcb`, and `wayland`; system Python/Qt are build-only or unnecessary.
 
 ## Development package

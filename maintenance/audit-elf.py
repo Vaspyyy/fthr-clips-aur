@@ -9,6 +9,7 @@ ALLOWED = {
     'ld-linux-x86-64.so.2': 'glibc', 'libc.so.6': 'glibc',
     'libdl.so.2': 'glibc', 'libm.so.6': 'glibc', 'libmvec.so.1': 'glibc',
     'libpthread.so.0': 'glibc', 'libresolv.so.2': 'glibc', 'librt.so.1': 'glibc',
+    'libgcc_s.so.1': 'gcc-libs', 'libstdc++.so.6': 'gcc-libs',
     'libGL.so.1': 'libglvnd', 'libEGL.so.1': 'libglvnd',
     'libdrm.so.2': 'libdrm', 'libxcb.so.1': 'libxcb',
     'libwayland-client.so.0': 'wayland', 'libwayland-cursor.so.0': 'wayland',
